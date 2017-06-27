@@ -102,7 +102,7 @@ module.exports = function(config) {
       pollingTimeout: 10000,
     },
 
-    browsers: ['Chrome'],
+    browsers: ['ChromeHeadless'],
 
     port: 9876,
     captureTimeout: 180000,

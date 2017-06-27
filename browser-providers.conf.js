@@ -41,6 +41,7 @@ var customLaunchers = {
   'DartiumWithWebPlatform':
       {base: 'Dartium', flags: ['--enable-experimental-web-platform-features']},
   'ChromeNoSandbox': {base: 'Chrome', flags: ['--no-sandbox']},
+  'ChromeHeadless': {base: 'Chrome', flags: ['--headless', '--disable-gpu', '--remote-debugging-port=9222']},
   'SL_CHROME': {base: 'SauceLabs', browserName: 'chrome', version: '54'},
   'SL_CHROMEBETA': {base: 'SauceLabs', browserName: 'chrome', version: 'beta'},
   'SL_CHROMEDEV': {base: 'SauceLabs', browserName: 'chrome', version: 'dev'},
