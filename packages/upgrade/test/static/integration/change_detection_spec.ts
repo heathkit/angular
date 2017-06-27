@@ -100,8 +100,9 @@ export function main() {
            ngOnChanges(changes: SimpleChanges) {
              if (changes['value'].isFirstChange()) return;
 
-             this.zone.onMicrotaskEmpty.subscribe(
-                 () => { expect(element.textContent).toEqual('5'); });
+             window.setTimeout(() => {
+               expect(element.textContent).toEqual('5');
+             }, 500);
 
              Promise.resolve().then(() => this.valueFromPromise = changes['value'].currentValue);
            }

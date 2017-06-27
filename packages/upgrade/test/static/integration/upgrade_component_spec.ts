@@ -59,7 +59,9 @@ export function main() {
            const element = html(`<ng2></ng2>`);
 
            bootstrap(platformBrowserDynamic(), Ng2Module, element, ng1Module).then((upgrade) => {
-             expect(multiTrim(element.textContent)).toBe('Hello, Angular!');
+             setTimeout(() => {
+               expect(multiTrim(element.textContent)).toBe('Hello, Angular!');
+             }, 100);
            });
          }));
 

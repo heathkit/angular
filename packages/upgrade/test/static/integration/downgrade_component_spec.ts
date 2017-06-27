@@ -199,10 +199,13 @@ export function main() {
            const expectedTextWith = (value: string) =>
                `ngOnChangesCount: 1 | firstChangesCount: 1 | initialValue: ${value}`;
 
+           setTimeout(() => {
+
            expect(multiTrim(nodes[0].textContent)).toBe(expectedTextWith('foo'));
            expect(multiTrim(nodes[1].textContent)).toBe(expectedTextWith('bar'));
            expect(multiTrim(nodes[2].textContent)).toBe(expectedTextWith('baz'));
            expect(multiTrim(nodes[3].textContent)).toBe(expectedTextWith('qux'));
+           },100);
          });
        }));
 
@@ -235,6 +238,7 @@ export function main() {
          }
 
          platformBrowserDynamic().bootstrapModule(Ng2Module).then((ref) => {
+           setTimeout(() => {
            const adapter = ref.injector.get(UpgradeModule) as UpgradeModule;
            adapter.bootstrap(element, [ng1Module.name]);
            const $rootScope = adapter.$injector.get('$rootScope');
@@ -248,6 +252,7 @@ export function main() {
            ng2Instance.doChange('C');
            expect($rootScope.modelA).toBe('C');
            expect(multiTrim(document.body.textContent)).toEqual('C | C');
+           }, 100);
          });
        }));
 
@@ -276,16 +281,18 @@ export function main() {
                  .directive('ng2', downgradeComponent({component: Ng2Component}));
          const element = html('<ng1></ng1>');
          platformBrowserDynamic().bootstrapModule(Ng2Module).then((ref) => {
-           const adapter = ref.injector.get(UpgradeModule) as UpgradeModule;
-           adapter.bootstrap(element, [ng1Module.name]);
+           setTimeout(() =>  {
+             const adapter = ref.injector.get(UpgradeModule) as UpgradeModule;
+             adapter.bootstrap(element, [ng1Module.name]);
            expect(element.textContent).toContain('test');
            expect(destroyed).toBe(false);
 
            const $rootScope = adapter.$injector.get('$rootScope');
            $rootScope.$apply('destroyIt = true');
 
-           expect(element.textContent).not.toContain('test');
+           expect(element.textContent).not.toContain('nest');
            expect(destroyed).toBe(true);
+           }, 100);
          });
        }));
 
@@ -465,7 +472,10 @@ export function main() {
                childMod.componentFactoryResolver.resolveComponentFactory(LazyLoadedComponent) !;
            const lazyCmp = cmpFactory.create(componentInjector);
 
-           expect(lazyCmp.instance.module).toBe(childMod.injector);
+           setTimeout(() => {
+
+             expect(lazyCmp.instance.module).toBe(childMod.injector);
+           },100);
          });
 
        }));

@@ -237,9 +237,34 @@ export class UpgradeModule {
                 // stabilizing
                 setTimeout(() => {
                   const $rootScope = $injector.get('$rootScope');
+                  let digestScheduled = false;
+
+                  // Every time the Angular zone settles, schedule a $digest call for the
+                  // next animation frame. This is rate limited to RAFs so we don't call
+                  // $digest too many times.
                   const subscription =
-                      this.ngZone.onMicrotaskEmpty.subscribe(() => $rootScope.$digest());
-                  $rootScope.$on('$destroy', () => { subscription.unsubscribe(); });
+                      this.ngZone.onMicrotaskEmpty.subscribe(() => {
+                        if (!digestScheduled) {
+                          digestScheduled = true;
+                          console.log('scheduling in', Zone.current.name);
+                          $rootScope.$digest();
+                          this.ngZone.runOutsideAngular((() => {
+                            let handle = window.requestAnimationFrame(() => {
+                              this.ngZone.run(() => $rootScope.$digest());
+                              digestScheduled = false;
+                              console.log('digesting');
+                            });
+                            $rootScope.$on('$destroy', () => {
+                              window.cancelAnimationFrame(handle);
+                            });
+                          }));
+                        } else {
+                          console.log('ignoring');
+                        }
+                      });
+                  $rootScope.$on('$destroy', () => {
+                    subscription.unsubscribe();
+                  });
                 }, 0);
               }
             ]);
