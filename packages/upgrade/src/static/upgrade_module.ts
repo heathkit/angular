@@ -246,20 +246,16 @@ export class UpgradeModule {
                       this.ngZone.onMicrotaskEmpty.subscribe(() => {
                         if (!digestScheduled) {
                           digestScheduled = true;
-                          console.log('scheduling in', Zone.current.name);
                           $rootScope.$digest();
                           this.ngZone.runOutsideAngular((() => {
                             let handle = window.requestAnimationFrame(() => {
                               this.ngZone.run(() => $rootScope.$digest());
                               digestScheduled = false;
-                              console.log('digesting');
                             });
                             $rootScope.$on('$destroy', () => {
                               window.cancelAnimationFrame(handle);
                             });
                           }));
-                        } else {
-                          console.log('ignoring');
                         }
                       });
                   $rootScope.$on('$destroy', () => {
